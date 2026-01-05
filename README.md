@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🔒 Privalk Web
+# Privalk Web
 
 **Secure, Real-time, and Private Messaging for the Modern Web.**
 
