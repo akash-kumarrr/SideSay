@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Privalk</title>
+    <link rel="icon" href="{{ url_for('static', filename='logo.png') }}" type="image/png">
+    <style>
+        :root {
+            --bg-body: #09090b;
+            --bg-sidebar: #18181b;
+            --bg-chat: #09090b;
+            --text-main: #ffffff;
+            --text-muted: #a1a1aa;
+            --accent: #00dc82;
+            --border: rgba(255,255,255,0.06);
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .settings-container {
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+            flex: 1;
+        }
+
+        .back-button-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+            margin-bottom: 20px;
+            margin-top: 20px;
+        }
+        .back-button-link:hover { color: var(--text-main); }
+
+        /* Profile Card */
+        .profile-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            overflow: hidden;
+            position: relative;
+        }
+        .profile-banner {
+            height: 120px;
+            background: linear-gradient(120deg, rgba(0,220,130,0.15), rgba(0,0,0,0));
+            border-bottom: 1px solid var(--border);
+        }
+        .profile-info-wrapper {
+            padding: 0 20px 30px;
+            margin-top: -50px;
+            position: relative;
+            text-align: center;
+        }
+        .profile-avatar-lg {
+            width: 110px; height: 110px;
+            border-radius: 50%;
+            background: #121212;
+            border: 4px solid #18181b;
+            margin: 0 auto 15px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem; font-weight: 800; color: white;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        }
+        .profile-name { font-size: 1.5rem; font-weight: 700; margin-bottom: 2px; letter-spacing: -0.5px; }
+        .profile-handle { color: var(--accent); font-family: monospace; font-size: 0.9rem; margin-bottom: 20px; display: block; opacity: 0.9; }
+        
+        .profile-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            max-width: 700px;
+            margin: 0 auto;
+            background: rgba(0,0,0,0.2);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid var(--border);
+            backdrop-filter: blur(10px);
+        }
+        .p-stat-item { display: flex; flex-direction: column; gap: 8px; }
+        .p-stat-val { font-size: 1.1rem; font-weight: 700; color: white; }
+        .p-stat-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+
+        /* Friends Panel */
+        .friends-panel {
+            background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 25px;
+            min-height: 400px;
+        }
+        .friend-list-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+            overflow-y: auto;
+            max-height: 500px;
+        }
+        .friend-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 12px;
+            transition: all 0.2s ease;
+        }
+        .friend-row:hover {
+            background: rgba(255,255,255,0.04);
+            transform: translateY(-1px);
+            border-color: rgba(255,255,255,0.1);
+        }
+        .friend-info { display: flex; align-items: center; gap: 15px; flex: 1; min-width: 0; }
+        .friend-name { font-weight: 500; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .btn-remove {
+            background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #ef4444; font-weight: 600; font-size: 0.75rem;
+            cursor: pointer; transition: 0.2s; padding: 6px 12px; border-radius: 6px;
+            margin-left: 10px;
+            white-space: nowrap;
+        }
+        .btn-remove:hover { background: #ef4444; color: white; }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+        @media (max-width: 900px) { .profile-grid { grid-template-columns: 1fr; } }
+
+        .user-avatar-small {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3f3f46, #27272a);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="settings-container">
+        <a href="/chat" class="back-button-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            Back to Chat
+        </a>
+        
+        <div class="profile-grid">
+            <!-- Left: Personal Info -->
+            <div class="profile-card">
+                <div class="profile-banner"></div>
+                <div class="profile-info-wrapper">
+                    <div class="user-avatar-small profile-avatar-lg" id="p-avatar"></div>
+                    <h2 class="profile-name" id="p-name">Loading...</h2>
+                    <span class="profile-handle">@{{ username }}</span>
+                    
+                    <p style="color: var(--text-muted); margin-bottom: 20px;" id="p-bio"></p>
+
+                    <div class="profile-stats-grid">
+                        <div class="p-stat-item">
+                            <span class="p-stat-label">Joined</span>
+                            <span class="p-stat-val" id="p-joined">-</span>
+                        </div>
+                        <div class="p-stat-item">
+                            <span class="p-stat-label">Friends</span>
+                            <span class="p-stat-val" id="friend-count-display">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Friends List -->
+            <div class="friends-panel">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 15px;">
+                    <h2 style="font-size: 1.5rem;">My Friends</h2>
+                </div>
+                <div id="profile-friends-list" class="friend-list-container">
+                    <div style="text-align: center; color: var(--text-muted); padding: 20px;">Loading friends...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const targetUser = "{{ username }}";
+
+        async function loadData() {
+            // 1. Load Profile Details
+            try {
+                const res = await fetch('/show_profile/' + targetUser);
+                if (res.ok) {
+                    const data = await res.json();
+                    document.getElementById('p-name').textContent = data.name || targetUser;
+                    document.getElementById('p-bio').textContent = data.bio || 'No bio available.';
+                    document.getElementById('p-joined').textContent = data.date_joined || 'Unknown';
+                    document.getElementById('p-avatar').textContent = (data.name || targetUser).charAt(0).toUpperCase();
+                }
+            } catch (e) { console.error(e); }
+
+            // 2. Load Friends (Assuming viewing own profile or allowed to see friends)
+            try {
+                const response = await fetch('/friend');
+                if (response.ok) {
+                    const data = await response.json();
+                    const friends = Array.isArray(data) ? data : (data.friends || []);
+                    const container = document.getElementById('profile-friends-list');
+                    container.innerHTML = '';
+
+                    if (friends.length > 0) {
+                        document.getElementById('friend-count-display').textContent = friends.length;
+                        friends.forEach(friend => {
+                            const div = document.createElement('div');
+                            div.className = 'friend-row';
+                            div.innerHTML = `<div class="friend-info"><div class="user-avatar-small">${friend.charAt(0).toUpperCase()}</div><span class="friend-name">${friend}</span></div>`;
+                            container.appendChild(div);
+                        });
+                    } else {
+                        container.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 20px;">No friends connected yet.</div>';
+                        document.getElementById('friend-count-display').textContent = '0';
+                    }
+                }
+            } catch (e) { console.error(e); }
+        }
+        window.onload = loadData;
+    </script>
+</body>
+</html>

@@ -1,0 +1,212 @@
+/* Modern Theme System with CSS Variables */
+:root {
+    --bg-primary: #000000;
+    --bg-secondary: #111111;
+    --text-primary: #ffffff;
+    --text-secondary: #aaaaaa;
+    --glass-bg: rgba(20, 20, 20, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --transition-speed: 0.3s;
+}
+
+/* Default Theme: Modern Green + Black */
+[data-theme="green-black"],
+[data-theme="green-black"] body {
+    --theme-color: #22c55e;
+    --accent: #22c55e !important;
+    --theme-gradient: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    --theme-shadow: rgba(34, 197, 94, 0.25);
+    --theme-bg-light: rgba(34, 197, 94, 0.1);
+}
+
+/* Red + Black */
+[data-theme="red-black"],
+[data-theme="red-black"] body {
+    --theme-color: #f43f5e;
+    --accent: #f43f5e !important;
+    --theme-gradient: linear-gradient(135deg, #f43f5e 0%, #be123c 100%);
+    --theme-shadow: rgba(244, 63, 94, 0.25);
+    --theme-bg-light: rgba(244, 63, 94, 0.1);
+}
+
+/* Pink + Black */
+[data-theme="pink-black"],
+[data-theme="pink-black"] body {
+    --theme-color: #ec4899;
+    --accent: #ec4899 !important;
+    --theme-gradient: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+    --theme-shadow: rgba(236, 72, 153, 0.25);
+    --theme-bg-light: rgba(236, 72, 153, 0.1);
+}
+
+/* Yellow + Black */
+[data-theme="yellow-black"],
+[data-theme="yellow-black"] body {
+    --theme-color: #f59e0b;
+    --accent: #f59e0b !important;
+    --theme-gradient: linear-gradient(135deg, #f59e0b 0%, #b45309 100%);
+    --theme-shadow: rgba(245, 158, 11, 0.25);
+    --theme-bg-light: rgba(245, 158, 11, 0.1);
+}
+
+/* Purple + Black */
+[data-theme="purple-black"],
+[data-theme="purple-black"] body {
+    --theme-color: #8b5cf6;
+    --accent: #8b5cf6 !important;
+    --theme-gradient: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+    --theme-shadow: rgba(139, 92, 246, 0.25);
+    --theme-bg-light: rgba(139, 92, 246, 0.1);
+}
+
+/* Theme Switcher UI */
+.theme-grid {
+    position: relative;
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+    align-items: center;
+}
+
+.theme-grid::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+.theme-option {
+    flex: 0 0 auto;
+    width: auto;
+    min-width: 80px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    padding: 8px 12px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+    color: inherit; /* For button element */
+    font-family: inherit; /* For button element */
+    appearance: none; /* Remove default button styling */
+}
+
+.theme-option:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.theme-option.active {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--theme-color);
+    box-shadow: 0 0 10px var(--theme-shadow) inset;
+}
+
+.theme-preview {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    border: 2px solid rgba(255,255,255,0.1);
+}
+
+.theme-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+/* Responsive Back Button */
+.back-button {
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.2s;
+    width: 44px; /* Touch target size */
+    height: 44px;
+}
+
+.back-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Settings Modal Layout */
+.settings-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    z-index: 2000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    animation: fadeIn 0.2s forwards;
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+.settings-content {
+    background: var(--bg-secondary);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+@media (min-width: 768px) {
+    .settings-content {
+        width: 400px;
+        height: auto;
+        max-height: 80vh;
+        border-radius: 16px;
+        border: 1px solid var(--glass-border);
+        box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    }
+}
+
+.settings-header {
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-bottom: 1px solid var(--glass-border);
+    background: var(--glass-bg);
+}
+
+.settings-header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: var(--text-primary);
+}
+
+.settings-body {
+    padding: 1.5rem;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.text-muted {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    display: block;
+}
