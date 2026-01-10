@@ -13,6 +13,8 @@ instance/
 
 # Secrets & Environment Variables
 serviceAccountKey.json
+control_unit.py
+.env.example
 .env
 
 # IDE & System
